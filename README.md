@@ -3,3 +3,9 @@ There is factory named folderin database in which their ia a file names usersfac
 ```
 php artisan make:factory ListingFactory
 ```
+
+```
+php artisan migrate:refresh --seed
+```
+
+## now we will make the layout
