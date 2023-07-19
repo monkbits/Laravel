@@ -27,7 +27,6 @@
                             <h3 class="text-3xl font-bold mb-4">
                                 Job Description
                             </h3>
-                            {{$listing->description}}
                             <div class="text-lg space-y-6">
                                 {{$listing->description}}
 
