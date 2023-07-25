@@ -62,3 +62,23 @@ protected $fillable = ['title', 'company', 'location', 'website', 'email', 'desc
 ```
 
 `Model::unguard();`
+
+```
+php arisan vender:publish
+```
+
+add this in form whenever u deal with file
+
+```
+enctype="multipart/form-data"
+```
+
+```
+php artisan storage:link
+
+```
+
+```
+@csrf
+@method('PUT')
+```

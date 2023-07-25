@@ -11,16 +11,16 @@ class ListingController extends Controller
     //Show all listings
     public function index(){
         return view('listings.index',[
-            'listings' => Listing::latest()->filter(request(['tag', 'search']))->get()
+            'listings' => Listing::latest()->filter(request(['tag', 'search']))->paginate(6)
         ]);
     }
-    
+
     //Show single listings
     public function show(Listing $listing){
         return view('listings.show', [
             'listing' => $listing
         ]);
-    
+
     }
 
     //show create form
@@ -40,7 +40,59 @@ class ListingController extends Controller
             'description'=> 'required'
         ]);
 
+        if($request->hasFile('logo')){
+            $formFields['logo']  = $request->file('logo')->store('logos','public');
+        }
+        $formFields['user_id'] = auth()->id();
+
         Listing::create($formFields);
-        return redirect('/');
+        return redirect('/')->with('message','Listing created successfully!');
     }
-}
+
+     //update listing data
+     public function update(Request $request, Listing $listing){
+
+        //making sure that logged user is owner
+        if($listing->user_id != auth()->id()){
+            abort(403, 'unauthorised action');
+        }
+
+        $formFields = $request->validate([
+            'title' => 'required',
+            'company' => ['required'],
+            'location' => 'required',
+            'website' => 'required',
+            'email'  => ['required', 'email'],
+            'tags' => 'required',
+            'description'=> 'required'
+        ]);
+
+        if($request->hasFile('logo')){
+            $formFields['logo']  = $request->file('logo')->store('logos','public');
+        }
+
+        
+
+        $listing->update($formFields);
+        return back()->with('message','Listing updated successfully!');
+    }
+
+    // Show listing Form
+    public function edit(Listing $listing){
+        return view('listings.edit', ['listing' => $listing]);
+    }
+
+    public function destroy(Listing $listing){
+        //making sure that logged user is owner
+        if($listing->user_id != auth()->id()){
+            abort(403, 'unauthorised action');
+        }
+        $listing->delete();
+        return redirect('/')->with('message','listing deleted successfully');
+    }
+
+    // manage listing
+    public function manage() {
+        return view('listings.manage', ['listings' => auth()->user()->listings()->get()]);
+    }
+    }
